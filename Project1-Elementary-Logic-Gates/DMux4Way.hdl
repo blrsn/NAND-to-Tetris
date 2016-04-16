@@ -11,10 +11,16 @@
  *                {0, 0, 0, in} if sel == 11
  */
 
-CHIP DMux4Way {
-    IN in, sel[2];
-    OUT a, b, c, d;
+ CHIP DMux4Way {
+     IN in, sel[2];
+     OUT a, b, c, d;
 
-    PARTS:
-    // Put your code here:
-}
+     PARTS:
+     DMux(in=in, sel=sel[0], a=s0a, b=s0b);
+     Not ( in=sel[1], out=snot );
+
+     And ( a=s0a, b=snot, out=a );
+     And ( a=s0b, b=snot, out=b );
+     And ( a=s0a, b=sel[1], out=c );
+     And ( a=s0b, b=sel[1], out=d );
+ }
