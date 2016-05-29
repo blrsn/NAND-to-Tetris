@@ -16,5 +16,22 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    Inc16( in=preout, out=incr );
+
+    // Select input or increment based on inc.
+    Mux16( a=in, b=incr, sel=inc, out=input1 );
+
+    // Select previous value or input based on load.
+    Mux16( a=input1, b=in, sel=load, out=input2 );
+
+    // Select previous value or 0 based on reset.
+    Mux16( a=input2, b=false, sel=reset, out=input3 );
+
+    // If any of the three controls bit( inc, reset, load) , the new calculated load should be 1
+    Or(a=inc, b=load, out=t);
+    Or(a=t, b=reset, out=calcload);
+
+    Register( in=input3 , load=calcload, out=preout );
+    And16( a=preout, b=true, out=out );
+
 }
